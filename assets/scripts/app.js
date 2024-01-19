@@ -12,7 +12,7 @@ const LOG_EVENT_GAME_OVER = 'GAME_OVER';
 
 let chosenMaxLife;
 
-function getMaxLifeValues () {
+function getMaxLifeValues() {
 	const enteredValue = prompt('Enter the maximum life: ', '100');
 	let parsedValue = parseInt(enteredValue);
 
@@ -21,13 +21,13 @@ function getMaxLifeValues () {
 	}
 	return parsedValue;
 }
-	
+
 try {
 	chosenMaxLife = getMaxLifeValues();
 } catch (error) {
 	console.log(error);
 	chosenMaxLife = 100;
-	alert('Wrong input. Input has to be a number')
+	alert('Wrong input. Input has to be a number');
 }
 
 let currentMonsterHealth = chosenMaxLife;
@@ -35,9 +35,9 @@ let currentPlayerHealth = chosenMaxLife;
 let hasBonusLife = true;
 let battleLog = [];
 
-
 adjustHealthBars(chosenMaxLife);
 
+//Keuzes, uitkomst enz naar log
 function writeToLog(ev, val, monsterHealth, playerHealth) {
 	let = logEntry = {
 		event: ev,
@@ -66,6 +66,7 @@ function writeToLog(ev, val, monsterHealth, playerHealth) {
 	battleLog.push(logEntry);
 }
 
+//functionaliteiten bij verscillende attackmodes
 function attackMonster(mode) {
 	let maxDamage;
 	let logEvent;
@@ -90,6 +91,7 @@ function strongAttackHandler() {
 	attackMonster(MODE_STRONG_ATTACK);
 }
 
+//Einde ronde incl geruik bonus leven
 function endRound() {
 	const initialPlayerHealth = currentPlayerHealth;
 	const playerDamage = dealPlayerDamage(MONSTER_ATTACK_VALUE);
@@ -106,10 +108,10 @@ function endRound() {
 		removeBonusLife();
 		currentPlayerHealth = initialPlayerHealth;
 		setPlayerHealth(initialPlayerHealth);
-		alert('You just used your bonus life');
+		alert('Bonus life used');
 	}
 	if (currentMonsterHealth <= 0 && currentPlayerHealth > 0) {
-		alert('You Won');
+		alert('You Won!');
 		writeToLog(
 			LOG_EVENT_GAME_OVER,
 			'PLAYER WON',
@@ -117,7 +119,7 @@ function endRound() {
 			currentPlayerHealth
 		);
 	} else if (currentPlayerHealth <= 0 && currentMonsterHealth > 0) {
-		alert('You Lost');
+		alert('You Lost!');
 		writeToLog(
 			LOG_EVENT_GAME_OVER,
 			'MONSTER WON',
@@ -138,11 +140,12 @@ function endRound() {
 	}
 }
 
+//Heal functie bij minder dan 80% leven
 function healPlayerHandler() {
 	let healValue;
 	if (currentPlayerHealth >= chosenMaxLife - HEAL_VALUE) {
 		healValue = chosenMaxLife - currentPlayerHealth;
-		alert('You can not heal more');
+		alert('You still have enough health available');
 	} else {
 		healValue = HEAL_VALUE;
 	}
@@ -157,25 +160,22 @@ function healPlayerHandler() {
 	endRound();
 }
 
+//reset bij einde spel
 function reset() {
 	currentMonsterHealth = chosenMaxLife;
 	currentPlayerHealth = chosenMaxLife;
 	resetGame(chosenMaxLife);
 }
 
+//Log keuzes en uitkomsten per beurt
 function printLogHandler() {
-	let j = 0;
-	while (j < 3) {
-		console.log(j);
-		j++;
-	}
-
 	let i = 0;
 	for (const logEntry of battleLog) {
-		console.log(`#${i}`);
+		console.log(`Turn: #${i}`);
 		for (const key in logEntry) {
 			console.log(`${key} => ${logEntry[key]}`);
 		}
+		i++;
 	}
 }
 
